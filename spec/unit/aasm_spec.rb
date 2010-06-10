@@ -277,7 +277,7 @@ describe AASM, '- event callbacks' do
           transitions :to => :closed, :from => [:open]
         end
       end
-
+      
       @foo = Foo.new
     end
 
@@ -287,6 +287,17 @@ describe AASM, '- event callbacks' do
       @foo.stub!(:enter).and_raise(e=StandardError.new)
       @foo.should_receive(:error_callback).with(e)
       @foo.safe_close!
+    end
+    
+    it "should run error_callback if an exception is raised and error_callback is privately defined" do
+      class Pvt < Foo
+        private
+        def error_callback(e); end
+      end
+      @pvt = Pvt.new
+      @pvt.stub!(:enter).and_raise(e=StandardError.new)
+      @pvt.should_receive(:error_callback).with(e)
+      @pvt.safe_close!
     end
 
     it "should raise NoMethodError if exceptionis raised and error_callback is declared but not defined" do

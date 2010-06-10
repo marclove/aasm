@@ -81,7 +81,7 @@ class AASM::SupportingClasses::Event
     raise error unless callback
     case(callback)
       when String, Symbol
-        raise NoMethodError unless obj.respond_to?(callback.to_sym)
+        raise NoMethodError unless obj.respond_to?(callback.to_sym, true)
         obj.send(callback, error)
       when Proc
         callback.call(obj, error)
